@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: metadata_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: metadata_db
+      MYSQL_USER: metadata_user
+      MYSQL_PASSWORD: metadata_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - metadata_network
+
+  api:
+    build: .
+    container_name: metadata_api
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: metadata_user
+      DB_PASSWORD: metadata_password
+      DB_NAME: metadata_db
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - logs:/app/logs
+    networks:
+      - metadata_network
+
+volumes:
+  mysql_data:
+  logs:
+
+networks:
+  metadata_network:
+    driver: bridge
