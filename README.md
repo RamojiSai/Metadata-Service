@@ -2,6 +2,7 @@
 
 A lightweight metadata and lineage service designed to track datasets and their dependencies across a modern data platform using **Bronze → Silver → Gold** layers.
 
+---
 
 ## 🚀 How to Run
 
@@ -9,16 +10,22 @@ A lightweight metadata and lineage service designed to track datasets and their 
 
 ```bash
 docker-compose up --build
+```
 
 API will be available at:
 
+```
 http://localhost:8000/api/v1
+```
 
 ### Local (Without Docker)
 
+```bash
 pip install -r requirements.txt
 python main.py
+```
 
+---
 
 ## 🧠 Architecture (Short & Clear)
 
@@ -34,21 +41,27 @@ python main.py
 * Prevents invalid pipelines (no self-references or circular dependencies)
 * Enables impact analysis (upstream & downstream traversal)
 
+---
 
 ## 📦 Core APIs
 
 ### Create Dataset
 
+```
 POST /datasets
+```
 
 Registers datasets with fully-qualified names (connection.database.schema.table).
 
 Used across **Bronze (raw)**, **Silver (cleaned)**, and **Gold (analytics)** layers.
 
+---
 
 ### Create Lineage
 
+```
 POST /lineage
+```
 
 Defines upstream → downstream dependencies between datasets.
 
@@ -57,10 +70,13 @@ Validation rules:
 * No self-lineage
 * No cycles (DAG enforced)
 
+---
 
 ### Search Metadata
 
+```
 GET /search?query=<text>
+```
 
 Priority-based search:
 
@@ -71,10 +87,13 @@ Priority-based search:
 
 Supports case-insensitive and partial matches.
 
+---
 
 ### Get Dataset Lineage
 
+```
 GET /datasets/{fqn}/lineage
+```
 
 Returns:
 
@@ -83,12 +102,15 @@ Returns:
 
 Useful for **impact analysis** and **root-cause tracing**.
 
+---
 
 ## 🧪 Test Scenario
 
 The service is validated using a **realistic e-commerce data pipeline**:
 
+```
 Raw (Bronze) → Cleaned (Silver) → Analytics (Gold)
+```
 
 Includes:
 
@@ -97,6 +119,7 @@ Includes:
 * Cycle-detection failure cases
 * Metadata search scenarios
 
+---
 
 ## ❌ Error Handling
 
@@ -106,6 +129,7 @@ Includes:
 
 All APIs return structured responses with status codes and details.
 
+---
 
 ## ✅ Why This Works Well
 
@@ -113,4 +137,4 @@ All APIs return structured responses with status codes and details.
 * Clean separation of API, service, and persistence layers
 * Designed for scale (easy to add versions, ownership, tags, or policies)
 
-
+---
